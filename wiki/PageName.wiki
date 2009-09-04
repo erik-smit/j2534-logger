@@ -1,0 +1,43 @@
+#summary j2534-logger API documentation
+
+= Introduction =
+
+j2534-logger is a shim DLL that sits between a J2534-application and a J2534-device. It records debugging information about the API calls and can write that information to a file.
+
+= Details =
+
+This library exports all standard PassThru functions, plus a few new functions that control the logging.
+
+== PassThruLoadLibrary ==
+{{{
+extern "C" long J2534_API PassThruLoadLibrary(
+   char * szFunctionLibrary
+);
+}}}
+
+*szLibrary*: Pointer to FunctionLibrary string.
+
+== PassThruWriteToLogA ==
+== PassThruWriteToLogW ==
+{{{
+extern "C" long J2534_API PassThruWriteToLogA(
+   char *szMsg
+);
+extern "C" long J2534_API PassThruWriteToLogW(
+   wchar_t *szMsg
+);
+}}}
+
+== PassThruSaveLog ==
+{{{
+extern "C" long WINAPI PassThruSaveLog(
+   char *szFilename
+);
+}}}
+
+*szFilename*: Pointer to the output filename string.
+
+== PassThruUnloadLibrary ==
+{{{
+extern "C" long WINAPI PassThruUnloadLibrary();
+}}}
