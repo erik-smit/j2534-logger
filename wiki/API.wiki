@@ -6,10 +6,10 @@ j2534-logger is a shim DLL that sits between a J2534-application and a J2534-dev
 
 = Details =
 
-This library exports all standard PassThru functions, plus a few new functions that control the logging.
+This library exports all standard !PassThru functions, plus a few new functions that control the logging.
 
 == !PassThruLoadLibrary ==
-This function causes the shim to load a J2534 DLL. This function must be called one time before any other function with the exception of PassThruWriteToLog, PassThruSaveLog, and PassThruGetLastError. Any other function called before a successful call to PassThruLoadLibrary will return an error. If the DLL exists and was loaded successfully, a value of STATUS_NOERROR is returned.
+This function causes the shim to load a J2534 DLL. This function must be called one time before any other function with the exception of [API#PassThruWriteToLog PassThruWriteToLog], [API#PassThruSaveLog PassThruSaveLog], and [API#PassThruGetLastError PassThruGetLastError]. Any other function called before a successful call to [API#PassThruLoadLibrary PassThruLoadLibrary] will return an error. If the DLL exists and was loaded successfully, a value of STATUS_NOERROR is returned.
 
 === C/C++ Prototype ===
 {{{
@@ -18,7 +18,7 @@ extern "C" long WINAPI PassThruLoadLibrary(
 );
 }}}
 
-*szFunctionLibrary*: Pointer to FunctionLibrary string. This must contain a path to a v04.04 J2534 DLL.
+*szFunctionLibrary*: Pointer to !FunctionLibrary string. This must contain a path to a v04.04 J2534 DLL.
 
 === Return Values ===
 || *Definition* || *Description* ||
@@ -52,7 +52,7 @@ extern "C" long WINAPI PassThruWriteToLogW(
 || *Definition* || *Description* ||
 || STATUS_NOERROR || Function call successful ||
 || ERR_NULL_POINTER || NULL pointer supplied where a valid pointer is required ||
-|| ERR_FAILED || Undefined error, use PassThruGetLastError for text description ||
+|| ERR_FAILED || Undefined error, use [API#PassThruGetLastError PassThruGetLastError] for text description ||
 
 == !PassThruSaveLog ==
 This function saves the debug log from an internal circular memory-buffer to a UTF-8 encoded file. If the function is successful a value of STATUS_NOERROR is returned and the memory-buffer is cleared.
@@ -72,10 +72,10 @@ extern "C" long WINAPI PassThruSaveLog(
 || *Definition* || *Description* ||
 || STATUS_NOERROR || Function call successful ||
 || ERR_NULL_POINTER || NULL pointer supplied where a valid pointer is required ||
-|| ERR_FAILED || Undefined error, use PassThruGetLastError for text description ||
+|| ERR_FAILED || Undefined error, use [API#PassThruGetLastError PassThruGetLastError] for text description ||
 
 == !PassThruUnloadLibrary ==
-This function causes the shim to unload the J2534 DLL. After this call, any function except PassThruWriteToLog, PassThruSaveLog, PassThruGetLastEror, and PassThruLoadLibrary will return ERR_FAILED. If the function is successful a value of STATUS_NOERROR is returned.
+This function causes the shim to unload the J2534 DLL. After this call, any function except [API#PassThruWriteToLog PassThruWriteToLog], [API#PassThruSaveLog PassThruSaveLog], [API#PassThruGetLastEror PassThruGetLastEror], and [API#PassThruLoadLibrary PassThruLoadLibrary] will return ERR_FAILED. If the function is successful a value of STATUS_NOERROR is returned.
 
 === C/C++ Prototype ===
 {{{
@@ -85,12 +85,12 @@ extern "C" long WINAPI PassThruUnloadLibrary();
 === Return Values ===
 || *Definition* || *Description* ||
 || STATUS_NOERROR || Function call successful ||
-|| ERR_FAILED || Undefined error, use PassThruGetLastError for text description ||
+|| ERR_FAILED || Undefined error, use [API#PassThruGetLastError PassThruGetLastError] for text description ||
 
 == !PassThruGetLastError ==
-This function returns the text string description for an error detected during the last function call. Like SAE J2534-1, the buffer pointed to by pErrorDescription is allocated by the application and must be at least eighty (80) characters. The function can be called at any time, even before calling PassThruLoadLibrary or after calling PassThruUnloadLibrary.
+This function returns the text string description for an error detected during the last function call. Like SAE J2534-1, the buffer pointed to by pErrorDescription is allocated by the application and must be at least eighty (80) characters. The function can be called at any time, even before calling [API#PassThruLoadLibrary PassThruLoadLibrary] or after calling [API#PassThruUnloadLibrary PassThruUnloadLibrary].
 
-The string describes an internal error if the shim has not loaded a J2534 DLL, if a DLL is loaded but does not provide an export for the last function call, or if the last function call was PassThruLoadLibrary, PassThruUnloadLibrary, PassThruWriteToLog, or PassThruSaveLog. In all other cases string comes from the J2534 DLL's function PassThruGetLastError.
+The string describes an internal error if the shim has not loaded a J2534 DLL, if a DLL is loaded but does not provide an export for the last function call, or if the last function call was [API#PassThruLoadLibrary PassThruLoadLibrary], [API#PassThruUnloadLibrary PassThruUnloadLibrary], [API#PassThruWriteToLog PassThruWriteToLog], or [API#PassThruSaveLog PassThruSaveLog]. In all other cases string comes from the J2534 DLL's function !PassThruGetLastError.
 
 === C/C++ Prototype ===
 {{{
@@ -105,4 +105,4 @@ extern “C” long WINAPI PassThruGetLastError(
 || *Definition* || *Description* ||
 || STATUS_NOERROR || Function call successful ||
 || ERR_NULL_POINTER || NULL pointer supplied where a valid pointer is required ||
-|| ERR_FAILED || Undefined error, use PassThruGetLastError for text description ||
+|| ERR_FAILED || Undefined error, use [API#PassThruGetLastError PassThruGetLastError] for text description ||
