@@ -105,4 +105,3 @@ extern “C” long WINAPI PassThruGetLastError(
 || *Definition* || *Description* ||
 || STATUS_NOERROR || Function call successful ||
 || ERR_NULL_POINTER || NULL pointer supplied where a valid pointer is required ||
-|| ERR_FAILED || Undefined error, use [API#PassThruGetLastError PassThruGetLastError] for text description ||
