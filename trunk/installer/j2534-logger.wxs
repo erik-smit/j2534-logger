@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <?define RTMProductVersion="1.0.0" ?>
-  <?define ProductVersion="1.0.1" ?>
+  <?define ProductVersion="1.0.2" ?>
   <?define UpgradeCode="{49A9E0B0-AF77-4983-843C-8BA7F29CF9EA}"?>
 
   <Product

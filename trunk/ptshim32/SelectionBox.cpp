@@ -51,18 +51,17 @@ BOOL CSelectionBox::OnInitDialog()
 	CDialog::OnInitDialog();
 	ShowWindow(SW_HIDE);
 
-	LPTSTR pszPath;
-	SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &pszPath);
+	TCHAR szPath[MAX_PATH];
+	SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, 0, szPath);
 
 	SYSTEMTIME LocalTime;
 	GetLocalTime(&LocalTime);
 
 	CString cstrPath;
-	cstrPath.Format(_T("%s\\%s_%04d-%02d-%02d_%02d-%02d-%02d_%04d.txt"), pszPath, _T("ShimDLL"), LocalTime.wYear,
+	cstrPath.Format(_T("%s\\%s_%04d-%02d-%02d_%02d-%02d-%02d_%04d.txt"), szPath, _T("ShimDLL"), LocalTime.wYear,
 		LocalTime.wMonth, LocalTime.wDay, LocalTime.wHour, LocalTime.wMinute, LocalTime.wSecond,
 		LocalTime.wMilliseconds);
 
-	CoTaskMemFree(pszPath);
 	m_logfilename.SetWindowText(cstrPath);
 
 	DoPopulateRegistryListbox();

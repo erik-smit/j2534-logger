@@ -46,6 +46,6 @@
 	</Target>
 	-->
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files\Microsoft SDKs\Windows\v7.0\Bin\signtool" sign /ac $(ProjectDir)\MSCV-GlobalSign.cer /d "j2534-logger Installer" /du "http://www.drewtech.com/" /n "Drew Technologies, Inc." $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files\Microsoft SDKs\Windows\v7.0\Bin\signtool" sign /ac $(SolutionDir)\MSCV-GlobalSign.cer /d "j2534-logger Installer" /du "http://www.drewtech.com/" /n "Drew Technologies, Inc." $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
 </Project>
