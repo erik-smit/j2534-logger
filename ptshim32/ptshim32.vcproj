@@ -173,6 +173,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="&quot;C:\Program Files\Microsoft SDKs\Windows\v7.0\Bin\signtool&quot; sign /ac $(SolutionDir)\MSCV-GlobalSign.cer /d &quot;j2534-logger DLL&quot; /du &quot;http://www.drewtech.com/&quot; /n &quot;Drew Technologies, Inc.&quot; $(TargetPath)"
 			/>
 		</Configuration>
 	</Configurations>

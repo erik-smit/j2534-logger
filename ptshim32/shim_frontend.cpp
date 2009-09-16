@@ -62,8 +62,8 @@ extern "C" long J2534_API PassThruLoadLibrary(char * szFunctionLibrary)
 	{
 		// Return an error. Perhaps we want to change NULL to do an autodetect and popup?
 		shim_setInternalError(_T("szFunctionLibrary was zero"));
-		dbug_printretval(ERR_FAILED);
-		return ERR_FAILED;
+		dbug_printretval(ERR_NULL_PARAMETER);
+		return ERR_NULL_PARAMETER;
 	}
 
 	CStringW cstrLibrary(szFunctionLibrary);
@@ -398,6 +398,10 @@ long shim_PassThruGetLastError(char *pErrorDescription)
 	}
 	else
 	{
+		// These macros call shim_setInternalError() which does not work the way
+		// this function is documented. They should be replaced with code that
+		// prints an error to the debug log and copies the text to pErrorDescription
+		// if the pointer is non-NULL
 		SHIM_CHECK_DLL();
 		SHIM_CHECK_FUNCTION(_PassThruGetLastError);
 
@@ -410,6 +414,10 @@ extern "C" long J2534_API PassThruGetLastError(char *pErrorDescription)
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 	auto_lock lock;
 	long retval;
+
+	// pErrorDescription returns the text description for an error detected
+	// during the last function call (EXCEPT PassThruGetLastError). This
+	// function should not modify the last internal error
 
 	dtDebug(_T("%.3fs ** PTGetLastError(0x%08X)\n"), GetTimeSinceInit(), pErrorDescription);
 
@@ -430,6 +438,9 @@ extern "C" long J2534_API PassThruGetLastError(char *pErrorDescription)
 #endif
 	}
 
+	// Log the return value for this function without using dbg_printretval().
+	// Even if an error occured inside this function, the error text was not
+	// updated to describe the error.
 	dtDebug(_T("  %s\n"), dbug_return(retval).c_str());
 	return retval;
 }

@@ -20,6 +20,7 @@
 
 
 #include <stdafx.h>
+#include <afxmt.h>
 
 #include "j2534_v0404.h"
 #include "SelectionBox.h"
@@ -48,33 +49,28 @@ static HINSTANCE hDLL = NULL;
 static bool fLibLoaded = false;
 static LARGE_INTEGER ticksPerSecond;
 static LARGE_INTEGER tick;
-static INIT_ONCE g_InitPerformanceCounter;
-static INIT_ONCE g_InitAutoLock;
 static CRITICAL_SECTION mAutoLock;
+
+// Vista-forward has a great function InitOnceExecuteOnce() to thread-safe execute
+// a callback exactly once, but we want to support Windows XP. Instead we'll guard
+// with a globally initialized CCriticalSection.
+static CCriticalSection CritSectionPerformanceCounter;
+static bool fPerformanceCounterInitialized = false;
+static CCriticalSection CritSectionAutoLock;
+static bool fAutoLockInitialized = false;
 
 static void EnumPassThruInterfaces(std::set<cPassThruInfo> &registryList);
 
-static BOOL CALLBACK InitAutoLock(PINIT_ONCE InitOnce, PVOID Parameter, PVOID * lpContext)
-{
-	InitializeCriticalSection(&mAutoLock);
-
-	return TRUE;
-}
-
-static BOOL CALLBACK InitPerformanceCounter(PINIT_ONCE InitOnce, PVOID Parameter, PVOID * lpContext)
-{
-	QueryPerformanceFrequency(&ticksPerSecond);
-	QueryPerformanceCounter(&tick);
-
-	return TRUE;
-}
-
 auto_lock::auto_lock()
 {
-	BOOL bStatus;
-
 	// ONCE -- the first time somebody creates an autolock we need to initialize the mutex
-	bStatus = InitOnceExecuteOnce(&g_InitAutoLock, InitAutoLock, NULL, NULL);
+	CritSectionAutoLock.Lock();
+	if (! fAutoLockInitialized)
+	{
+		InitializeCriticalSection(&mAutoLock);
+		fAutoLockInitialized = true;
+	}
+	CritSectionAutoLock.Unlock();
 
 	if (! TryEnterCriticalSection(&mAutoLock))
 	{
@@ -207,8 +203,14 @@ double GetTimeSinceInit()
     double time;
 
 	// ONCE -- the first time somebody gets a timestamp set the timer to 0.000s
-	BOOL bStatus;
-	bStatus = InitOnceExecuteOnce(&g_InitPerformanceCounter, InitPerformanceCounter, NULL, NULL);
+	CritSectionPerformanceCounter.Lock();
+	if (! fPerformanceCounterInitialized)
+	{
+		QueryPerformanceFrequency(&ticksPerSecond);
+		QueryPerformanceCounter(&tick);
+		fPerformanceCounterInitialized = true;
+	}
+	CritSectionPerformanceCounter.Unlock();
 
 	QueryPerformanceCounter(&tock);
 	time = (double)(tock.QuadPart-tick.QuadPart)/(double)ticksPerSecond.QuadPart;
